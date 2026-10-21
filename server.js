@@ -213,7 +213,7 @@ app.post('/api/admin/upload', admin, upload.single('image'), wrap(async (req, re
   if (!req.file) return res.status(400).json({ error: 'Upload a JPG, PNG or WebP image under 3 MB' });
   const name = crypto.randomBytes(12).toString('hex') + EXT[req.file.mimetype];
   if (!SB_ON) { fs.writeFileSync('public/uploads/' + name, req.file.buffer); return res.json({ url: '/uploads/' + name }); }
-  const r = await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${name}`, { method: 'POST', headers: { Authorization: 'Bearer ' + SB_KEY, apikey: SB_KEY, 'Content-Type': req.file.mimetype }, body: req.file.buffer });
+  const r = await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${name}`, { method: 'POST', headers: { ...(SB_KEY.startsWith('sb_') ? {} : { Authorization: 'Bearer ' + SB_KEY }), apikey: SB_KEY, 'Content-Type': req.file.mimetype }, body: req.file.buffer });
   if (!r.ok) { console.error('Storage upload failed', r.status, await r.text()); return res.status(502).json({ error: 'Photo upload failed' }); }
   res.json({ url: `${SB_URL}/storage/v1/object/public/${SB_BUCKET}/${name}` });
 }));
