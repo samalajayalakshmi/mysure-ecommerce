@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mysure E-Commerce Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0820;--sf:rgba(255,255,255,.06);--in:rgba(255,255,255,.07);--tx:#f5f3ff;--mu:#aaa4cc;--bd:rgba(255,255,255,.13);--ac:#a78bfa;--ac2:#150a33;--dg:#fb7185;--g:linear-gradient(110deg,#a78bfa,#f472b6 45%,#22d3ee);--gx:50vw;--gy:30vh;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f6f3ff;--sf:rgba(255,255,255,.75);--in:rgba(80,50,160,.07);--tx:#1b1035;--mu:#5f5985;--bd:rgba(70,40,150,.16);--ac:#6d3df0;--ac2:#fff;--dg:#c81e4a;--g:linear-gradient(110deg,#6d3df0,#d6247e 50%,#0891b2);color-scheme:light}}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "DM Sans",system-ui,sans-serif;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:9;background:var(--bg)}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(520px circle at var(--gx) var(--gy),rgba(167,139,250,.22),transparent 60%),radial-gradient(700px circle at 85% 8%,rgba(244,114,182,.16),transparent 60%),radial-gradient(800px circle at 5% 90%,rgba(34,211,238,.13),transparent 60%)}
+header,main{position:relative;z-index:1}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);display:flex;gap:10px;align-items:center;padding:10px 18px;flex-wrap:wrap}
+header b{font:800 20px "Bricolage Grotesque",sans-serif;cursor:pointer;margin-right:auto;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:var(--sf);border:1px solid var(--bd);border-radius:999px;padding:8px 15px;cursor:pointer;transition:transform .15s,background .15s}
+button:hover{transform:translateY(-1px);background:var(--in)}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.p{background:var(--g);color:var(--ac2);border:0;font-weight:700}button.d{color:var(--dg)}button:disabled{opacity:.4;cursor:not-allowed}
+input,select,textarea{background:var(--in);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;width:100%}
+main{max-width:1060px;margin:0 auto;padding:18px}
+h2{font:800 28px "Bricolage Grotesque",sans-serif;margin:8px 0 16px}
+.hero{position:relative;border:1px solid var(--bd);border-radius:28px;padding:clamp(28px,6vw,64px);margin-bottom:22px;overflow:hidden;background:var(--sf);backdrop-filter:blur(10px)}
+.hero h1{font:800 clamp(34px,6.5vw,66px)/1.02 "Bricolage Grotesque",sans-serif;margin:0 0 14px;max-width:11em;background:var(--g);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 8s linear infinite alternate}
+.hero p{color:var(--mu);font-size:18px;max-width:30em;margin:0 0 22px}
+.hero .p{padding:13px 28px;font-size:16px;box-shadow:0 10px 40px -8px var(--ac)}
+.fl{position:absolute;font-size:clamp(40px,7vw,78px);filter:drop-shadow(0 12px 24px rgba(167,139,250,.5));animation:bob 5s ease-in-out infinite;user-select:none}
+@keyframes bob{50%{transform:translateY(-18px) rotate(6deg)}}@keyframes flow{to{background-position:100% 0}}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}.chips button.on{background:var(--g);color:var(--ac2);border:0;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{position:relative;background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:16px;backdrop-filter:blur(8px)}
+.tilt{transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .18s ease-out;overflow:hidden}
+.tilt::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(220px circle at var(--mx,50%) var(--my,0%),rgba(167,139,250,.28),transparent 70%);opacity:0;transition:opacity .2s}.tilt:hover::after{opacity:1}
+.em{font-size:62px;text-align:center;border-radius:14px;padding:14px;margin-bottom:10px;background:radial-gradient(circle at 50% 40%,rgba(167,139,250,.28),transparent 70%)}
+.mu{color:var(--mu);font-size:13px}.pr{font:800 20px "Bricolage Grotesque",sans-serif}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{margin-left:auto}
+.tabs button.on{background:var(--g);color:var(--ac2);border:0;font-weight:700}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-weight:500}
+form.f{display:grid;gap:12px;max-width:430px}
+.stat{flex:1;min-width:140px}.stat b{font:800 28px "Bricolage Grotesque",sans-serif;display:block}
+#toast{position:fixed;z-index:20;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--g);color:var(--ac2);font-weight:700;padding:10px 20px;border-radius:999px;display:none}
+@media (max-width:640px){.fl{opacity:.35}.hero h1{max-width:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.tilt{transform:none}html{scroll-behavior:auto}}
+header b{margin-right:0}.hs{flex:1;min-width:200px;max-width:620px;display:flex}.hs input{border-radius:999px 0 0 999px}.hs button{border-radius:0 999px 999px 0}#nav{margin-left:auto}
+:root{--ok:#34d399}@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--ok:#047857}}
+.bn{position:relative;border:1px solid var(--bd);border-radius:26px;overflow:hidden;height:clamp(190px,32vw,300px);background:var(--sf);margin-bottom:8px}
+.sl{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:clamp(20px,5vw,56px);opacity:0;transition:opacity .8s;pointer-events:none}.sl.on{opacity:1;pointer-events:auto}
+.sl h1{font:800 clamp(26px,5vw,52px)/1.05 "Bricolage Grotesque",sans-serif;margin:0 0 8px;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sl p{color:var(--mu);margin:0 0 16px;max-width:26em}.big{font-size:clamp(44px,9vw,110px);filter:drop-shadow(0 14px 30px rgba(167,139,250,.5));animation:bob 5s ease-in-out infinite}
+.rail{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x proximity}.rail .card{min-width:210px;max-width:210px;scroll-snap-align:start}
+.lay{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:start}.flt{display:grid;gap:8px;position:sticky;top:90px}
+.st{background:linear-gradient(90deg,#fbbf24 var(--r),rgba(150,150,175,.4) var(--r));-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px;font-size:15px}
+.off{color:var(--ok);font-weight:700;font-size:13px}.hrt{position:absolute;right:10px;top:10px;z-index:2;padding:4px 9px;font-size:16px}
+.pd{display:grid;grid-template-columns:minmax(220px,380px) 1fr;gap:28px;margin:18px 0}.big1{font-size:150px;line-height:1.1;padding:30px}
+#bn{display:none}#res-h{scroll-margin-top:90px}
+@media (max-width:700px){.lay{grid-template-columns:1fr}.flt{position:static;grid-template-columns:1fr 1fr 1fr}.flt b{display:none}.pd{grid-template-columns:1fr}.big1{font-size:100px}.nb{display:none}main{padding-bottom:90px}#toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+#bn{display:flex;position:fixed;z-index:8;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(16px);border-top:1px solid var(--bd);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+#bn button{flex:1;border:0;background:none;border-radius:12px;font-size:11px;display:flex;flex-direction:column;align-items:center;padding:4px}#bn button span{font-size:18px}#bn button.on{color:var(--ac)}}
+.blob{position:fixed;z-index:0;border-radius:50%;filter:blur(90px);opacity:.42;pointer-events:none;animation:drift 20s ease-in-out infinite alternate}
+.b1{width:420px;height:420px;background:#7c3aed;left:-120px;top:10vh}.b2{width:380px;height:380px;background:#ec4899;right:-100px;top:45vh;animation-delay:-8s}.b3{width:340px;height:340px;background:#06b6d4;left:35vw;bottom:-160px;animation-delay:-14s}
+@keyframes drift{to{transform:translate(70px,-60px) scale(1.15)}}@media (prefers-color-scheme:light){.blob{opacity:.24}}
+h2::after{content:"";display:block;width:56px;height:4px;border-radius:4px;background:var(--g);margin-top:6px}
+.bn{height:clamp(230px,38vw,360px);border:0}.sl h1{background:none;-webkit-text-fill-color:#fff;color:#fff}.sl p{color:rgba(255,255,255,.92);font-size:17px}
+.wb{background:#fff;color:#1b1035;border:0;font-weight:800;padding:12px 26px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45)}
+.big{display:flex;gap:4px;animation:none}.big span{animation:bob 4s ease-in-out infinite;filter:drop-shadow(0 14px 22px rgba(0,0,0,.4))}
+.mq{overflow:hidden;border-block:1px solid var(--bd);margin:16px 0;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq div{display:inline-flex;gap:48px;padding:11px 24px;animation:mq 30s linear infinite;font-weight:700}@keyframes mq{to{transform:translateX(-50%)}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:8px}
+.tile{position:relative;overflow:hidden;border:0;border-radius:24px;min-height:130px;padding:18px;color:#fff;text-align:left;font:800 22px "Bricolage Grotesque",sans-serif;box-shadow:0 14px 34px -14px rgba(0,0,0,.5)}
+.tile:hover{transform:translateY(-5px) rotate(-1deg)}.tile span{position:absolute;right:8px;bottom:-8px;font-size:76px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}
+.cd{font:700 14px "DM Sans",sans-serif;background:var(--g);color:var(--ac2);border-radius:999px;padding:4px 13px;vertical-align:middle;margin-left:8px;display:inline-block}
+.card .em{font-size:84px;line-height:1.2;background:radial-gradient(circle at 50% 38%,hsl(var(--h,260) 90% 62%/.5),hsl(var(--h,260) 80% 45%/.12) 72%);filter:drop-shadow(0 10px 14px rgba(0,0,0,.25));transition:transform .3s}
+.card:hover .em{transform:scale(1.12) rotate(-5deg)}.tilt:hover{box-shadow:0 20px 50px -18px hsl(var(--h,260) 90% 60%/.75)}
+.bdg{position:absolute;left:10px;top:10px;z-index:2;background:var(--g);color:var(--ac2);font-weight:800;font-size:12px;padding:3px 10px;border-radius:999px}
+@media (prefers-reduced-motion:reduce){.blob,.mq div{animation:none!important}}
+.pm{width:100%;height:170px;object-fit:cover;border-radius:14px;margin-bottom:10px;display:block;background:var(--in)}.pmb{width:100%;max-height:440px;object-fit:cover;border-radius:22px;border:1px solid var(--bd)}
+</style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
+<header><b onclick="go('shop')">✨ Mysure E-Commerce Website</b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
+<main id="app"></main><nav id="bn"></nav><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),inr=n=>'₹'+Number(n).toLocaleString('en-IN');
+const LS={g:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let U=LS.g('u',null),cart=LS.g('cart',[]),wish=LS.g('wish',[]),coupon=LS.g('coupon',''),P=[],CATS=[];
+let view='shop',cat=0,q='',sort='rel',maxp=0,minr=0,pid=0,tab='dash',edit=null,slide=0,tm,tm2,msg='',reg=false;
+const isAdmin=()=>U&&U.role==='admin',prod=id=>P.find(p=>p.id===id),saveC=()=>LS.s('cart',cart);
+async function api(path,o={}){const h={};if(U)h.Authorization='Bearer '+U.token;let body=o.body;if(body&&!(body instanceof FormData)){h['Content-Type']='application/json';body=JSON.stringify(body)}
+const r=await fetch('/api'+path,{method:o.method||'GET',headers:h,body}),d=await r.json().catch(()=>({}));
+if(!r.ok){if(r.status===401&&U){U=null;LS.s('u',null);nav()}throw new Error(d.error||'Something went wrong')}return d}
+async function load(){const[p,c]=await Promise.all([api('/products'),api('/categories')]);P=p.map(x=>({...x,price:+x.price,mrp:+x.mrp||0,rating:+x.rating||0,rc:+x.rc||0}));CATS=c}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)}
+const fail=e=>toast(e.message||'Something went wrong');
+function go(v){view=v;render()}
+const V={shop,cart:cartV,checkout,login,orders,admin,detail,wish:wishV};
+function render(){nav();V[view]();window.scrollTo(0,0)}
+function nav(){const n=cart.reduce((a,c)=>a+c.q,0);
+$('#nav').innerHTML=(U?`<span class="mu nb">Hi, ${esc(U.name)}</span>`:'')+`<button class="nb" onclick="go('wish')">♡ ${wish.length}</button><button class="nb" onclick="go('cart')">🛒 ${n}</button>`+(isAdmin()?`<button class="p nb" onclick="go('admin')">Admin</button>`:'')+(U&&!isAdmin()?`<button class="nb" onclick="go('orders')">Orders</button>`:'')+(U?`<button onclick="logout()">Logout</button>`:`<button class="p" onclick="go('login')">Login</button>`);
+$('#bn').innerHTML=[['shop','🏠','Home'],['wish','♡','Wishlist'],['cart','🛒','Cart'+(n?' ('+n+')':'')],[U?(isAdmin()?'admin':'orders'):'login','👤',U?(isAdmin()?'Admin':'Orders'):'Login']].map(x=>`<button class="${view===x[0]?'on':''}" onclick="go('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}
+// ---- catalogue ----
+const S=[['Mega electronics sale','Up to 40% off phones, headphones and watches',['📱','🎧','⌚'],'Electronics','linear-gradient(120deg,#4338ca,#7e22ce 55%,#be185d)'],['New season fashion','Shoes, bags and shirts from ₹799',['👟','🎒','👕'],'Fashion','linear-gradient(120deg,#be185d,#c2410c)'],['Make your home magical','Lamps, mugs and cozy picks',['💡','☕','🛋️'],'Home','linear-gradient(120deg,#0f766e,#1d4ed8)']];
+const MQ=['🚚 Free delivery above ₹999','🔒 Secure checkout','↩️ Easy 7-day returns','⭐ 4.5 average rating','🎁 Use MYSURE10 for 10% off'],TI={Electronics:['💻','linear-gradient(135deg,#4338ca,#0e7490)'],Fashion:['👗','linear-gradient(135deg,#db2777,#7e22ce)'],Home:['🏡','linear-gradient(135deg,#b45309,#be123c)']};
+const stars=r=>`<span class="st" style="--r:${r/5*100}%" title="${(+r).toFixed(1)} out of 5">★★★★★</span>`;
+const off=p=>p.mrp>p.price?Math.round((1-p.price/p.mrp)*100):0,wished=id=>wish.includes(id);
+const pic=p=>p.image_url?`<img class="pm" src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:`<div class="em">${esc(p.icon||'📦')}</div>`;
+function card(p){const o=off(p);return `<div class="card tilt" style="--h:${(p.id*47)%360}" onclick="openP(${p.id})"><button class="hrt" data-id="${p.id}" aria-label="Wishlist" onclick="event.stopPropagation();wl(${p.id})">${wished(p.id)?'♥':'♡'}</button>${o?`<span class="bdg">−${o}%</span>`:''}${pic(p)}<b>${esc(p.name)}</b>
+<div class="row">${stars(p.rating)}<span class="mu">${p.rc.toLocaleString('en-IN')}</span></div>
+<div class="row"><span class="pr">${inr(p.price)}</span>${o?`<s class="mu">${inr(p.mrp)}</s><span class="off">${o}% off</span>`:''}</div>
+<div class="mu">${p.stock>0?(p.stock<5?'Only '+p.stock+' left':'Free delivery'):'Out of stock'}</div>
+<button class="p" style="margin-top:8px;width:100%" ${p.stock<1?'disabled':''} onclick="event.stopPropagation();add(${p.id})">Add to cart</button></div>`}
+function cdTick(){const e=document.getElementById('cd');if(!e)return clearInterval(tm2);const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const t=Math.floor((m-n)/1000),f=x=>String(x).padStart(2,'0');e.textContent='Ends in '+f(t/3600|0)+':'+f(t%3600/60|0)+':'+f(t%60)}
+function shop(){clearInterval(tm);slide=0;
+const deals=[...P].filter(p=>off(p)).sort((a,b)=>off(b)-off(a)).slice(0,8);
+$('#app').innerHTML=`<div class="chips" id="cats">${[{id:0,name:'All'},...CATS].map(c=>`<button class="${c.id===cat?'on':''}" onclick="setCat(${c.id})">${esc(c.name)}</button>`).join('')}</div>
+<section class="bn">${S.map((s,i)=>`<div class="sl ${i?'':'on'}" style="background:${s[4]}"><div><h1>${s[0]}</h1><p>${s[1]}</p><button class="wb" onclick="setCatName('${s[3]}')">Shop now</button></div><div class="big" aria-hidden="true">${s[2].map((e,j)=>`<span style="animation-delay:-${j*1.3}s">${e}</span>`).join('')}</div></div>`).join('')}</section>
+<div class="mq" aria-hidden="true"><div>${[...MQ,...MQ].map(x=>`<span>${x}</span>`).join('')}</div></div>
+<h2>Shop by category</h2><div class="tiles">${CATS.map(c=>`<button class="tile" style="background:${(TI[c.name]||['','linear-gradient(135deg,#6d28d9,#db2777)'])[1]}" onclick="setCat(${c.id})">${esc(c.name)}<span>${(TI[c.name]||['🛍️'])[0]}</span></button>`).join('')}</div>
+${deals.length?`<h2>Today’s deals <span class="cd" id="cd"></span></h2><div class="rail">${deals.map(card).join('')}</div>`:''}
+<h2 id="res-h">All products</h2>
+<div class="lay"><aside class="card flt"><b>Sort by</b><select id="so" aria-label="Sort"><option value="rel">Featured</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="rt">Top rated</option></select>
+<b>Max price</b><select id="mp" aria-label="Max price"><option value="0">Any price</option><option value="1000">Under ₹1,000</option><option value="5000">Under ₹5,000</option><option value="20000">Under ₹20,000</option></select>
+<b>Rating</b><select id="mr" aria-label="Rating"><option value="0">All ratings</option><option value="4">4★ and up</option></select></aside>
+<div><div class="mu" id="cnt" style="margin-bottom:8px"></div><div class="grid" id="res"></div></div></div>`;
+$('#so').value=sort;$('#mp').value=maxp;$('#mr').value=minr;
+$('#so').onchange=e=>{sort=e.target.value;results()};$('#mp').onchange=e=>{maxp=+e.target.value;results()};$('#mr').onchange=e=>{minr=+e.target.value;results()};
+tm=setInterval(()=>{const x=document.querySelectorAll('.sl');if(!x.length)return clearInterval(tm);slide=(slide+1)%x.length;x.forEach((e,i)=>e.classList.toggle('on',i===slide))},5000);
+clearInterval(tm2);cdTick();tm2=setInterval(cdTick,1000);results()}
+function results(){if(!$('#res'))return;const t=q.toLowerCase();
+const l=P.filter(p=>(!cat||p.category_id===cat)&&(p.name+' '+(p.description||'')+' '+(p.category||'')).toLowerCase().includes(t)&&(!maxp||p.price<=maxp)&&p.rating>=minr);
+l.sort({rel:()=>0,pa:(a,b)=>a.price-b.price,pd:(a,b)=>b.price-a.price,rt:(a,b)=>b.rating-a.rating}[sort]);
+$('#cnt').textContent=l.length+' results'+(q?' for “'+q+'”':'');
+$('#res').innerHTML=l.map(card).join('')||'<p>No products match. Try another word or loosen the filters.</p>'}
+const scrollR=()=>{const h=document.getElementById('res-h');h&&h.scrollIntoView()};
+function setCat(id){cat=id;if(view!=='shop'){view='shop';render()}document.querySelectorAll('#cats button').forEach((b,j)=>b.classList.toggle('on',j===(id?CATS.findIndex(c=>c.id===id)+1:0)));results();scrollR()}
+function setCatName(n){const c=CATS.find(x=>x.name===n);setCat(c?c.id:0)}
+function openP(id){pid=id;go('detail')}
+function wl(id){const i=wish.indexOf(id);i<0?wish.push(id):wish.splice(i,1);LS.s('wish',wish);nav();
+document.querySelectorAll(`.hrt[data-id="${id}"]`).forEach(b=>b.textContent=wished(id)?'♥':'♡');if(view==='wish')wishV();toast(i<0?'Saved to wishlist':'Removed from wishlist')}
+function wishV(){const l=P.filter(p=>wished(p.id));$('#app').innerHTML='<h2>Your wishlist</h2>'+(l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<p>Nothing saved yet. Tap ♡ on any product to keep it here.</p>')}
+async function detail(){const p=prod(pid);if(!p)return go('shop');const o=off(p),d=new Date(Date.now()+3*864e5).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
+let rv=[];try{rv=await api('/products/'+p.id+'/reviews')}catch(e){}
+const canR=U&&!isAdmin();
+$('#app').innerHTML=`<button onclick="go('shop')">← Back to shop</button><div class="pd">${p.image_url?`<img class="pmb" src="${esc(p.image_url)}" alt="${esc(p.name)}">`:`<div class="card em big1">${esc(p.icon||'📦')}</div>`}<div>
+<h2 style="margin-top:0">${esc(p.name)}</h2><div class="row">${stars(p.rating)}<span class="mu">${p.rating.toFixed(1)} · ${p.rc.toLocaleString('en-IN')} ratings</span></div>
+<div class="row" style="margin:10px 0"><span class="pr" style="font-size:32px">${inr(p.price)}</span>${o?`<s class="mu">${inr(p.mrp)}</s><span class="off">${o}% off</span>`:''}</div>
+<p>${esc(p.description||'')}</p><p class="mu">🚚 Free delivery by <b>${d}</b> on orders above ₹999. Cash on delivery available.</p>
+<p>${p.stock>0?(p.stock<5?'Only '+p.stock+' left in stock':'In stock'):'Out of stock'}</p>
+<div class="row"><button class="p" ${p.stock<1?'disabled':''} onclick="add(${p.id})">Add to cart</button><button ${p.stock<1?'disabled':''} onclick="add(${p.id});go('checkout')">Buy now</button><button onclick="wl(${p.id});detail()">${wished(p.id)?'♥ Saved':'♡ Wishlist'}</button></div></div></div>
+<h2>Customer reviews</h2>${canR?`<form class="f card" id="rf" style="margin-bottom:12px"><select name="r"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select><input name="t" placeholder="Share your experience" required maxlength="300"><button class="p">Post review</button></form>`:'<p class="mu">Log in as a customer to write a review.</p>'}
+${rv.map(r=>`<div class="card" style="margin-bottom:8px"><b>${esc(r.name)}</b> ${stars(r.rating)}<div>${esc(r.comment)}</div></div>`).join('')}`;
+const rf=$('#rf');if(rf)rf.onsubmit=async e=>{e.preventDefault();const f=new FormData(rf);try{await api('/products/'+p.id+'/reviews',{method:'POST',body:{rating:+f.get('r'),comment:f.get('t')}});await load();toast('Review posted');detail()}catch(x){fail(x)}}}
+// ---- cart & checkout ----
+function add(id){const p=prod(id),c=cart.find(x=>x.id===id);if((c?c.q:0)>=p.stock)return toast('No more stock');c?c.q++:cart.push({id,q:1});saveC();nav();toast('Added to cart')}
+const sub=()=>cart.reduce((a,c)=>{const p=prod(c.id);return a+(p?p.price*c.q:0)},0),disc=()=>coupon==='MYSURE10'?Math.round(sub()*.1):0,ship=()=>cart.length&&sub()-disc()<999?49:0,total=()=>sub()-disc()+ship();
+function applyCoupon(){const c=$('#cp').value.trim().toUpperCase();if(c&&c!=='MYSURE10')return toast('Invalid coupon code');coupon=c;LS.s('coupon',c);cartV()}
+function cartV(){const rows=cart.map(c=>({c,p:prod(c.id)})).filter(r=>r.p);
+$('#app').innerHTML=`<h2>Your cart</h2>`+(rows.length?`<div class="card tw"><table>${rows.map(({c,p})=>`<tr><td>${esc(p.icon||'')} ${esc(p.name)}</td><td>${inr(p.price)}</td><td><button onclick="qty(${p.id},-1)">−</button> ${c.q} <button onclick="qty(${p.id},1)">+</button></td><td>${inr(p.price*c.q)}</td></tr>`).join('')}</table></div>
+<div class="card" style="margin:12px 0;max-width:380px;display:grid;gap:8px"><div class="row"><input id="cp" placeholder="Coupon code (try MYSURE10)" value="${esc(coupon)}" style="flex:1"><button onclick="applyCoupon()">Apply</button></div>
+<div class="row"><span>Subtotal</span><span class="sp">${inr(sub())}</span></div><div class="row"><span>Coupon discount</span><span class="sp">−${inr(disc())}</span></div><div class="row"><span>Delivery</span><span class="sp">${ship()?inr(ship()):'Free'}</span></div><div class="row pr"><span>Total</span><span class="sp">${inr(total())}</span></div></div><button class="p" onclick="go('checkout')">Checkout</button>`:'<p>Your cart is empty. Find something you like in the shop.</p>')}
+function qty(id,d){const c=cart.find(x=>x.id===id),p=prod(id);c.q+=d;if(c.q>p.stock)c.q=p.stock;if(c.q<1)cart=cart.filter(x=>x.id!==id);saveC();cartV();nav()}
+async function checkout(){if(!U){msg='Please log in to check out';return go('login')}if(!cart.length)return go('cart');let on=false;try{on=(await api('/config')).online}catch{}
+$('#app').innerHTML=`<h2>Checkout</h2><form class="f" id="cf"><input name="name" placeholder="Full name" required value="${esc(U.name)}"><input name="phone" placeholder="Phone (10 digits)" required pattern="[0-9]{10}" title="10 digit number"><textarea name="addr" placeholder="Delivery address" required minlength="5"></textarea>
+<select name="pay" aria-label="Payment method"><option value="COD">Cash on Delivery</option>${on?'<option value="ONLINE">Pay online (UPI, cards, netbanking)</option>':''}</select><div class="pr">Total: ${inr(total())}</div><button class="p">Place order</button></form>`;
+$('#cf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;try{const r=await api('/orders',{method:'POST',body:{items:cart.map(c=>({product_id:c.id,quantity:c.q})),name:f.get('name'),phone:f.get('phone'),address:f.get('addr'),payment:f.get('pay'),coupon}});
+cart=[];coupon='';saveC();LS.s('coupon','');await load();if(r.online)return payOnline(r.order_id,r.online);toast('Order placed!');go('orders')}catch(x){btn.disabled=false;fail(x)}}}
+function loadRzp(){return new Promise((ok,no)=>{if(window.Razorpay)return ok();const s=document.createElement('script');s.src='https://checkout.razorpay.com/v1/checkout.js';s.onload=ok;s.onerror=()=>no(new Error('Could not load payment window. Check your internet.'));document.head.appendChild(s)})}
+async function payOnline(id,o){try{await loadRzp();new Razorpay({key:o.key,order_id:o.rp_order_id,amount:o.amount,currency:'INR',name:'Mysure',description:'Order #'+id,prefill:{name:U.name},
+handler:async r=>{try{await api('/orders/'+id+'/verify',{method:'POST',body:r});toast('Payment received. Order placed!')}catch(x){fail(x)}go('orders')},
+modal:{ondismiss:()=>{toast('Payment not completed. You can pay from My orders within 30 minutes.');go('orders')}}}).open()}catch(x){fail(x);go('orders')}}
+async function payNow(id,rp,amt){try{const c=await api('/config');payOnline(id,{key:c.key,rp_order_id:rp,amount:Math.round(amt*100)})}catch(x){fail(x)}}
+function login(){$('#app').innerHTML=`<h2>${reg?'Create account':'Login'}</h2><p class="mu">${esc(msg)}</p><form class="f" id="lf">${reg?'<input name="name" placeholder="Name" required>':''}<input name="email" type="email" placeholder="Email" required><input name="pass" type="password" placeholder="Password (min 6)" minlength="6" required><button class="p">${reg?'Register':'Login'}</button><button type="button" onclick="reg=${!reg};login()">${reg?'Have an account? Login':'New here? Register'}</button></form>`;msg='';
+$('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{
+const r=await api(reg?'/auth/register':'/auth/login',{method:'POST',body:{name:f.get('name'),email:f.get('email'),password:f.get('pass')}});
+U={token:r.token,name:r.name,role:r.role||'customer'};LS.s('u',U);go(isAdmin()?'admin':cart.length?'cart':'shop')}catch(x){fail(x)}}}
+function logout(){U=null;LS.s('u',null);go('shop')}
+async function orders(){if(!U)return go('login');let o=[];try{o=await api('/orders/mine')}catch(e){return fail(e)}
+$('#app').innerHTML=`<h2>My orders</h2>`+(o.map(o=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>Order #${o.id}</b><span class="mu">${new Date(o.created_at).toLocaleDateString('en-IN')}</span><b class="sp">${o.status}${o.payment_method==='ONLINE'?(o.payment_status==='Paid'?' · Paid':' · Awaiting payment'):' · COD'}</b></div><div class="mu">${o.items.map(i=>esc(i.product_name)+' ×'+i.quantity).join(', ')}</div><div class="pr">${inr(o.total)}</div>${o.status==='Pending'&&o.payment_method==='ONLINE'&&o.payment_status==='Unpaid'&&o.rp_order_id?`<button class="p" onclick="payNow(${o.id},'${esc(o.rp_order_id)}',${+o.total})">Pay now</button> `:''}${o.status==='Pending'&&!(o.payment_method==='ONLINE'&&o.payment_status==='Paid')?`<button class="d" onclick="cancelO(${o.id})">Cancel order</button>`:''}</div>`).join('')||'<p>No orders yet.</p>')}
+async function cancelO(id){try{await api('/orders/'+id+'/cancel',{method:'POST'});await load();orders()}catch(e){fail(e)}}
+// ---- admin ----
+async function admin(){if(!isAdmin())return go('login');
+const T=[['dash','Dashboard'],['prod','Products'],['ord','Orders'],['cust','Customers']],e=edit&&edit!=='new'?prod(edit)||{}:{};
+let h=`<h2>Admin panel</h2><div class="row tabs" style="margin-bottom:14px">${T.map(([k,n])=>`<button class="${tab===k?'on':''}" onclick="tab='${k}';edit=null;admin()">${n}</button>`).join('')}</div>`;
+try{
+if(tab==='dash'){const s=await api('/admin/stats');h+=`<div class="row"><div class="card stat"><span class="mu">Revenue</span><b>${inr(s.revenue)}</b></div><div class="card stat"><span class="mu">Orders</span><b>${s.orders}</b></div><div class="card stat"><span class="mu">Products</span><b>${P.length}</b></div></div><h3>Low stock alerts</h3>${s.low_stock.map(p=>`<div>⚠️ ${esc(p.name)}: ${p.stock} left</div>`).join('')||'<p class="mu">None</p>'}`}
+if(tab==='prod'){if(edit)h+=`<form class="f card" id="pf"><b>${edit==='new'?'Add product':'Edit product'}</b><input name="name" placeholder="Name" required value="${esc(e.name||'')}"><select name="cat"><option value="">Category</option>${CATS.map(c=>`<option value="${c.id}" ${c.id===e.category_id?'selected':''}>${esc(c.name)}</option>`).join('')}</select>
+<input name="price" type="number" step="0.01" min="1" placeholder="Price" required value="${e.price||''}"><input name="mrp" type="number" step="0.01" min="0" placeholder="MRP, original price (optional)" value="${e.mrp||''}"><input name="stock" type="number" min="0" placeholder="Stock" required value="${e.stock??''}">
+<label class="mu">Product photo (JPG, PNG or WebP, up to 3 MB)</label><input name="image" type="file" accept="image/jpeg,image/png,image/webp"><input name="icon" placeholder="Emoji shown until a photo is added" value="${esc(e.icon||'📦')}"><textarea name="desc" placeholder="Description">${esc(e.description||'')}</textarea>
+<div class="row"><button class="p">Save</button><button type="button" onclick="edit=null;admin()">Cancel</button></div></form>`;
+else h+=`<div class="row"><button class="p" onclick="edit='new';admin()">+ Add product</button><form id="catf" class="row"><input name="n" placeholder="New category" required style="width:180px"><button>Add category</button></form></div><div class="card tw" style="margin-top:12px"><table><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr>${P.map(p=>`<tr><td>${p.image_url?`<img src="${esc(p.image_url)}" alt="" width="36" height="36" style="object-fit:cover;border-radius:8px">`:esc(p.icon||'')}</td><td>${esc(p.name)}</td><td>${esc(p.category||'')}</td><td>${inr(p.price)}</td><td>${p.stock}</td><td><button onclick="edit=${p.id};admin()">Edit</button> <button class="d" onclick="delp(${p.id})">Delete</button></td></tr>`).join('')}</table></div>`}
+if(tab==='ord'){const o=await api('/admin/orders');h+=`<div class="card tw"><table><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr>${o.map(o=>`<tr><td>${o.id}</td><td>${esc(o.customer_name)}<div class="mu">${esc(o.phone)}</div></td><td>${o.items.map(i=>esc(i.product_name)+'×'+i.quantity).join(', ')}</td><td>${inr(o.total)}</td><td>${o.payment_method==='ONLINE'?(o.payment_status==='Paid'?'Online · Paid':'Online · Unpaid'):'COD'}</td><td><select onchange="ost(${o.id},this.value)">${['Pending','Shipped','Delivered','Cancelled','Refunded'].map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')||'<tr><td>No orders yet</td></tr>'}</table></div>`}
+if(tab==='cust'){const c=await api('/admin/customers');h+=`<div class="card tw"><table><tr><th>Name</th><th>Email</th><th>Joined</th></tr>${c.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${new Date(u.created_at).toLocaleDateString('en-IN')}</td></tr>`).join('')||'<tr><td>No customers yet</td></tr>'}</table></div>`}
+}catch(x){h+=`<p>${esc(x.message)}</p>`}
+$('#app').innerHTML=h;
+const pf=$('#pf');if(pf)pf.onsubmit=async ev=>{ev.preventDefault();const f=new FormData(pf),file=f.get('image');try{let url=e.image_url||null;
+if(file&&file.size){const fd=new FormData();fd.append('image',file);url=(await api('/admin/upload',{method:'POST',body:fd})).url}
+const body={name:f.get('name'),description:f.get('desc'),price:+f.get('price'),mrp:+f.get('mrp')||null,stock:+f.get('stock'),category_id:+f.get('cat')||null,image_url:url,icon:f.get('icon')||'📦'};
+edit==='new'?await api('/admin/products',{method:'POST',body}):await api('/admin/products/'+edit,{method:'PUT',body});await load();edit=null;toast('Saved');admin()}catch(x){fail(x)}};
+const cf=$('#catf');if(cf)cf.onsubmit=async ev=>{ev.preventDefault();try{await api('/admin/categories',{method:'POST',body:{name:new FormData(cf).get('n')}});await load();toast('Category added');admin()}catch(x){fail(x)}}}
+async function delp(id){if(!confirm('Delete this product?'))return;try{await api('/admin/products/'+id,{method:'DELETE'});await load();admin()}catch(e){fail(e)}}
+async function ost(id,s){try{await api('/admin/orders/'+id+'/status',{method:'PUT',body:{status:s}});toast('Status updated')}catch(e){fail(e)}}
+// ---- start ----
+$('#hf').onsubmit=e=>{e.preventDefault();scrollR()};$('#hs').oninput=e=>{q=e.target.value;if(view!=='shop'){view='shop';render()}else results();scrollR()};
+document.addEventListener('pointermove',e=>{const r=document.documentElement.style;r.setProperty('--gx',e.clientX+'px');r.setProperty('--gy',e.clientY+'px');
+const c=e.target.closest&&e.target.closest('.tilt');if(c){const k=c.getBoundingClientRect(),x=(e.clientX-k.left)/k.width,y=(e.clientY-k.top)/k.height;c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%');c.style.setProperty('--rx',((.5-y)*10)+'deg');c.style.setProperty('--ry',((x-.5)*12)+'deg')}});
+document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest('.tilt');if(c&&!c.contains(e.relatedTarget)){c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')}});
+load().then(render).catch(e=>{$('#app').innerHTML='<h2>Can’t reach the server</h2><p>'+esc(e.message)+'. Check that the backend is running and MySQL is connected.</p>'});
+</script></body></html>
