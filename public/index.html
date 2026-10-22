@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mysure E-Commerce Website</title>
+<title>Mysurepack</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍬%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -123,7 +124,7 @@ main{padding:14px}
 .rail .card .em{font-size:48px}
 }
 </style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
-<header><b onclick="go('shop')">✨ Mysure E-Commerce Website</b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
+<header><b onclick="go('shop')">🍬 Mysurepack</b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
 <div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><nav id="bn"></nav><div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),inr=n=>'₹'+Number(n).toLocaleString('en-IN');
@@ -214,7 +215,7 @@ $('#app').innerHTML=`<h2>Checkout</h2><form class="f" id="cf"><input name="name"
 $('#cf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;try{const r=await api('/orders',{method:'POST',body:{items:cart.map(c=>({product_id:c.id,quantity:c.q})),name:f.get('name'),phone:f.get('phone'),address:f.get('addr'),payment:f.get('pay'),coupon}});
 cart=[];coupon='';saveC();LS.s('coupon','');await load();if(r.online)return payOnline(r.order_id,r.online);toast('Order placed!');go('orders')}catch(x){btn.disabled=false;fail(x)}}}
 function loadRzp(){return new Promise((ok,no)=>{if(window.Razorpay)return ok();const s=document.createElement('script');s.src='https://checkout.razorpay.com/v1/checkout.js';s.onload=ok;s.onerror=()=>no(new Error('Could not load payment window. Check your internet.'));document.head.appendChild(s)})}
-async function payOnline(id,o){try{await loadRzp();new Razorpay({key:o.key,order_id:o.rp_order_id,amount:o.amount,currency:'INR',name:'Mysure',description:'Order #'+id,prefill:{name:U.name},
+async function payOnline(id,o){try{await loadRzp();new Razorpay({key:o.key,order_id:o.rp_order_id,amount:o.amount,currency:'INR',name:'Mysurepack',description:'Order #'+id,prefill:{name:U.name},
 handler:async r=>{try{await api('/orders/'+id+'/verify',{method:'POST',body:r});toast('Payment received. Order placed!')}catch(x){fail(x)}go('orders')},
 modal:{ondismiss:()=>{toast('Payment not completed. You can pay from My orders within 30 minutes.');go('orders')}}}).open()}catch(x){fail(x);go('orders')}}
 async function payNow(id,rp,amt){try{const c=await api('/config');payOnline(id,{key:c.key,rp_order_id:rp,amount:Math.round(amt*100)})}catch(x){fail(x)}}
