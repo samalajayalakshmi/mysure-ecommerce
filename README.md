@@ -1,4 +1,4 @@
-# Mysurepack (Node.js + Express + Supabase Postgres)
+# Mysure (Node.js + Express + Supabase Postgres)
 
 A full store: storefront, cart, checkout, reviews, wishlist, and a single-admin panel with product photo upload.
 
