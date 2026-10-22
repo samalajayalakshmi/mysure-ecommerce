@@ -156,6 +156,43 @@ main{padding:14px}
 .ar{display:grid;place-items:center;position:absolute;top:calc(50% - 8px);transform:translateY(-50%);z-index:3;width:38px;height:38px;padding:0;border-radius:50%;font-size:22px;line-height:1;box-shadow:0 6px 18px -6px rgba(0,0,0,.45)}
 .ar.l{left:-14px}.ar.r{right:-14px}
 }
+
+/* ---- wide, full-screen listing layout ---- */
+main{max-width:none;padding:18px clamp(14px,2vw,32px)}
+header{padding-inline:clamp(14px,2vw,32px)}
+#bk{max-width:none!important;padding-inline:clamp(14px,2vw,32px)!important}
+.lay{grid-template-columns:250px minmax(0,1fr);gap:26px}
+.grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.grid .card .pm{height:auto;aspect-ratio:4/5;object-fit:contain;border-radius:12px}
+.grid .card .em{aspect-ratio:4/5;display:grid;place-items:center;font-size:76px;line-height:1;padding:0}
+.grid .card b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;min-height:2.6em}
+.dl{font-size:13px;color:var(--mu)}.dl b{color:var(--tx)}
+.grid .card{display:flex;flex-direction:column}.grid .card .dl{flex:1}
+.rail .card{--rh:170px}.rail .card .pm{height:var(--rh);object-fit:contain}.rail .card .em{height:var(--rh);display:grid;place-items:center;padding:0;margin-bottom:10px}
+.flt{display:block;position:sticky;top:96px;max-height:calc(100vh - 110px);overflow:auto;padding-right:6px;scrollbar-width:thin}
+.fs{display:grid;gap:2px;padding:0 0 16px;margin-bottom:14px;border-bottom:1px solid var(--bd)}
+.fs b{display:block!important;font-size:16px;margin-bottom:6px}
+.fi{display:block;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:6px 8px;font-size:14px;color:var(--tx);cursor:pointer}
+.fi:hover{background:var(--in)}
+.fi.on{background:var(--in);font-weight:700;color:var(--ac)}
+.fclr{margin:0 0 14px;font-size:13px}
+.sbar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.sbar .mu{flex:1}
+.srt{font-size:14px;display:flex;align-items:center;gap:8px}
+.srt select{width:auto;padding:7px 12px}
+.ftog{display:none}
+@media (max-width:700px){
+main{padding:14px}
+.rail .card{--rh:120px}
+.lay{grid-template-columns:1fr;gap:10px}
+.flt{display:none;position:static;max-height:none;overflow:visible;padding:14px;margin-bottom:6px;background:var(--sf);border:1px solid var(--bd);border-radius:16px}
+.flt.open{display:block}
+.ftog{display:inline-block;padding:7px 14px}
+.srt{font-size:0}.srt select{font-size:14px}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid .card .pm,.grid .card .em{height:auto;aspect-ratio:4/5}
+.grid .card .em{font-size:54px}
+}
 </style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
 <header><b onclick="go('shop')"><img class="logo" src="/logo.png" alt="Mysure" width="84" height="66"></b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
 <div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><nav id="bn"></nav><div id="toast"></div>
@@ -165,7 +202,7 @@ const LS={g:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==nu
 const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t};applyTheme(LS.g('theme','light'));
 function toggleTheme(){const light=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='light':matchMedia('(prefers-color-scheme: light)').matches,t=light?'dark':'light';applyTheme(t);LS.s('theme',t);nav()}
 let U=LS.g('u',null),cart=LS.g('cart',[]),wish=LS.g('wish',[]),coupon=LS.g('coupon',''),P=[],CATS=[];
-let view='shop',cat=0,q='',sort='rel',maxp=0,minr=0,pid=0,tab='dash',edit=null,slide=0,tm,tm2,msg='',reg=false;
+let view='shop',cat=0,q='',sort='rel',maxp=0,minr=0,pid=0,pmin=0,mind=0,tab='dash',edit=null,slide=0,tm,tm2,msg='',reg=false;
 const isAdmin=()=>U&&U.role==='admin',prod=id=>P.find(p=>p.id===id),saveC=()=>LS.s('cart',cart);
 async function api(path,o={}){const h={};if(U)h.Authorization='Bearer '+U.token;let body=o.body;if(body&&!(body instanceof FormData)){h['Content-Type']='application/json';body=JSON.stringify(body)}
 const r=await fetch('/api'+path,{method:o.method||'GET',headers:h,body}),d=await r.json().catch(()=>({}));
@@ -190,10 +227,11 @@ const GR=['linear-gradient(135deg,#6d28d9,#db2777)','linear-gradient(135deg,#089
 const stars=r=>`<span class="st" style="--r:${r/5*100}%" title="${(+r).toFixed(1)} out of 5">★★★★★</span>`;
 const off=p=>p.mrp>p.price?Math.round((1-p.price/p.mrp)*100):0,wished=id=>wish.includes(id);
 const pic=p=>p.image_url?`<img class="pm" src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:`<div class="em">${esc(p.icon||'📦')}</div>`;
+const DLV=new Date(Date.now()+3*864e5).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
 function card(p){const o=off(p);return `<div class="card tilt" style="--h:${(p.id*47)%360}" onclick="openP(${p.id})"><button class="hrt" data-id="${p.id}" aria-label="Wishlist" onclick="event.stopPropagation();wl(${p.id})">${wished(p.id)?'♥':'♡'}</button>${o?`<span class="bdg">−${o}%</span>`:''}${pic(p)}<b>${esc(p.name)}</b>
 <div class="row">${stars(p.rating)}<span class="mu">${p.rc.toLocaleString('en-IN')}</span></div>
 <div class="row"><span class="pr">${inr(p.price)}</span>${o?`<s class="mu">${inr(p.mrp)}</s><span class="off">${o}% off</span>`:''}</div>
-<div class="mu">${p.stock>0?(p.stock<5?'Only '+p.stock+' left':'Free delivery'):'Out of stock'}</div>
+<div class="dl">${p.stock>0?'FREE delivery <b>'+DLV+'</b>':'<span style="color:var(--dg)">Out of stock</span>'}${p.stock>0&&p.stock<5?'<div style="color:var(--dg)">Only '+p.stock+' left</div>':''}</div>
 <button class="p" style="margin-top:8px;width:100%" ${p.stock<1?'disabled':''} onclick="event.stopPropagation();add(${p.id})">Add to cart</button></div>`}
 function cdTick(){const e=document.getElementById('cd');if(!e)return clearInterval(tm2);const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const t=Math.floor((m-n)/1000),f=x=>String(x).padStart(2,'0');e.textContent='Ends in '+f(t/3600|0)+':'+f(t%3600/60|0)+':'+f(t%60)}
 function shop(){clearInterval(tm);slide=0;
@@ -204,18 +242,25 @@ $('#app').innerHTML=`<div class="chips" id="cats">${[{id:0,name:'All'},...CATS].
 <h2>Shop by category</h2><div class="cw"><button class="ar l" onclick="sc(-1)" aria-label="Scroll left">‹</button><div class="tiles" id="tiles">${CATS.map(c=>`<button class="tile" style="--tg:${(TI[c.name]||['',GR[c.id%4]])[1]}" onclick="setCat(${c.id})">${esc(c.name)}<span>${(TI[c.name]||['🛍️'])[0]}</span></button>`).join('')}</div><button class="ar r" onclick="sc(1)" aria-label="Scroll right">›</button></div>
 ${deals.length?`<h2>Today’s deals <span class="cd" id="cd"></span></h2><div class="rail">${deals.map(card).join('')}</div>`:''}${rvRail(0)}
 <h2 id="res-h">All products</h2>
-<div class="lay"><aside class="card flt"><b>Sort by</b><select id="so" aria-label="Sort"><option value="rel">Featured</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="rt">Top rated</option></select>
-<b>Max price</b><select id="mp" aria-label="Max price"><option value="0">Any price</option><option value="1000">Under ₹1,000</option><option value="5000">Under ₹5,000</option><option value="20000">Under ₹20,000</option></select>
-<b>Rating</b><select id="mr" aria-label="Rating"><option value="0">All ratings</option><option value="4">4★ and up</option></select></aside>
-<div><div class="mu" id="cnt" style="margin-bottom:8px"></div><div class="grid" id="res"></div></div></div>`;
-$('#so').value=sort;$('#mp').value=maxp;$('#mr').value=minr;
-$('#so').onchange=e=>{sort=e.target.value;results()};$('#mp').onchange=e=>{maxp=+e.target.value;results()};$('#mr').onchange=e=>{minr=+e.target.value;results()};
+<div class="lay"><aside class="flt" id="flt"></aside>
+<div><div class="sbar"><span class="mu" id="cnt"></span><button class="ftog" onclick="$('#flt').classList.toggle('open')">⚙ Filters</button><label class="srt">Sort by <select id="so" aria-label="Sort"><option value="rel">Featured</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="rt">Top rated</option></select></label></div><div class="grid" id="res"></div></div></div>`;
+$('#so').value=sort;$('#so').onchange=e=>{sort=e.target.value;results()};renderFlt();
 tm=setInterval(()=>{const x=document.querySelectorAll('.sl');if(!x.length)return clearInterval(tm);slide=(slide+1)%x.length;x.forEach((e,i)=>e.classList.toggle('on',i===slide))},5000);
 clearInterval(tm2);cdTick();tm2=setInterval(cdTick,1000);results()}
+const PRICES=[['Any price',0,0],['Under ₹500',0,500],['₹500 – ₹1,000',500,1000],['₹1,000 – ₹5,000',1000,5000],['₹5,000 – ₹20,000',5000,20000],['Over ₹20,000',20000,0]];
+function setF(k,v,v2){if(k==='r')minr=v;if(k==='d')mind=v;if(k==='p'){pmin=v;maxp=v2}results()}
+function clearF(){minr=0;mind=0;pmin=0;maxp=0;cat=0;q='';const s=$('#hs');if(s)s.value='';document.querySelectorAll('#cats button').forEach((b,j)=>b.classList.toggle('on',j===0));results()}
+function renderFlt(){const f=$('#flt');if(!f)return;const it=(on,fn,t)=>`<button class="fi ${on?'on':''}" onclick="${fn}">${t}</button>`;
+const act=cat||minr||mind||pmin||maxp||q;
+f.innerHTML=`${act?'<button class="fclr" onclick="clearF()">✕ Clear all filters</button>':''}
+<div class="fs"><b>Category</b>${[{id:0,name:'All'},...CATS].map(c=>it(c.id===cat,`setCat(${c.id})`,esc(c.name))).join('')}</div>
+<div class="fs"><b>Customer review</b>${[[4,'4★ & up'],[3,'3★ & up'],[0,'Any rating']].map(x=>it(minr===x[0],`setF('r',${x[0]})`,x[1])).join('')}</div>
+<div class="fs"><b>Discount</b>${[[10,'10% off or more'],[25,'25% off or more'],[35,'35% off or more'],[50,'50% off or more'],[0,'Any discount']].map(x=>it(mind===x[0],`setF('d',${x[0]})`,x[1])).join('')}</div>
+<div class="fs"><b>Price</b>${PRICES.map(x=>it(pmin===x[1]&&maxp===x[2],`setF('p',${x[1]},${x[2]})`,x[0])).join('')}</div>`}
 function results(){if(!$('#res'))return;const t=q.toLowerCase();
-const l=P.filter(p=>(!cat||p.category_id===cat)&&(p.name+' '+(p.description||'')+' '+(p.category||'')).toLowerCase().includes(t)&&(!maxp||p.price<=maxp)&&p.rating>=minr);
+const l=P.filter(p=>(!cat||p.category_id===cat)&&(p.name+' '+(p.description||'')+' '+(p.category||'')).toLowerCase().includes(t)&&(!maxp||p.price<=maxp)&&p.price>=pmin&&off(p)>=mind&&p.rating>=minr);
 l.sort({rel:()=>0,pa:(a,b)=>a.price-b.price,pd:(a,b)=>b.price-a.price,rt:(a,b)=>b.rating-a.rating}[sort]);
-$('#cnt').textContent=l.length+' results'+(q?' for “'+q+'”':'');
+$('#cnt').textContent=l.length+(l.length===1?' result':' results')+(q?' for “'+q+'”':'');renderFlt();
 $('#res').innerHTML=l.map(card).join('')||'<p>No products match. Try another word or loosen the filters.</p>'}
 const scrollR=()=>{const h=document.getElementById('res-h');h&&h.scrollIntoView()};
 function arUpd(){const t=$('#tiles'),l=$('.ar.l'),r=$('.ar.r');if(!t||!l)return;l.style.visibility=t.scrollLeft>8?'visible':'hidden';r.style.visibility=t.scrollLeft+t.clientWidth<t.scrollWidth-8?'visible':'hidden'}
