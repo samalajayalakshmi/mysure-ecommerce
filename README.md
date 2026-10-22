@@ -18,7 +18,7 @@ The server talks to Supabase directly. Do not use the Supabase anon key in the b
 ## Using it
 - Customers: register, browse, add to cart, check out with Cash on Delivery or online payment (Razorpay: UPI, cards, netbanking), review products.
 - Admin: log in with the email and password from `.env`, then open Admin.
-  - Products tab: Add product, choose a category, and upload a photo (JPG, PNG or WebP, up to 3 MB).
+  - Products tab: Add product, choose a category, and upload a photo (JPG, PNG, WebP, GIF or AVIF, up to 5 MB).
   - Orders tab: change status (Pending, Shipped, Delivered, Cancelled, Refunded).
   - Customers and Dashboard tabs for the rest.
 - Coupon `MYSURE10` gives 10% off. Delivery is Rs 49 under Rs 999, free above. These are calculated on the server.
@@ -31,7 +31,7 @@ The server talks to Supabase directly. Do not use the Supabase anon key in the b
 ## Security built in
 bcrypt password hashing, JWT login, admin role checked on every admin route, no public admin signup,
 login rate limiting, parameterised SQL, helmet headers, server-side prices, stock locking inside a transaction,
-photo uploads limited to admin, image types and 3 MB.
+photo uploads limited to admin, image types and 5 MB.
 
 ## Before going live
 Use HTTPS (put it behind Nginx or a host that provides it), keep `.env` private, use Supabase backups (or a daily dump), and keep photos in Supabase Storage so they survive redeploys.

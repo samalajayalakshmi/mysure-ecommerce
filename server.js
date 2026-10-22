@@ -14,7 +14,7 @@ const one = async (sql, args = [], db = pool) => (await rows(sql, args, db))[0];
 
 const SB_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, ''), SB_KEY = process.env.SUPABASE_SERVICE_KEY, SB_BUCKET = process.env.SUPABASE_BUCKET || 'products';
 const SB_ON = !!(SB_URL && SB_KEY);
-const IMG_RE = SB_ON ? new RegExp('^(/uploads/|' + (SB_URL + '/storage/v1/object/public/' + SB_BUCKET + '/').replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&') + ')[a-f0-9]+\\.(jpg|png|webp)$') : /^\/uploads\/[a-f0-9]+\.(jpg|png|webp)$/;
+const IMG_RE = SB_ON ? new RegExp('^(/uploads/|' + (SB_URL + '/storage/v1/object/public/' + SB_BUCKET + '/').replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&') + ')[a-f0-9]+\\.(jpg|png|webp|gif|avif)$') : /^\/uploads\/[a-f0-9]+\.(jpg|png|webp|gif|avif)$/;
 
 const app = express();
 // index.html uses an inline <script> and onclick= handlers; helmet's default CSP would block all of them and the page would be dead.
@@ -203,14 +203,14 @@ app.get('/api/admin/stats', admin, wrap(async (_, res) => {
 
 // ---------- product photo upload (ADMIN ONLY) ----------
 // Photos go to Supabase Storage when SUPABASE_URL + SUPABASE_SERVICE_KEY are set (survives redeploys); otherwise to public/uploads.
-const EXT = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
+const EXT = { 'image/jpeg': '.jpg', 'image/pjpeg': '.jpg', 'image/jpg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/gif': '.gif', 'image/avif': '.avif' };
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 3 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_, f, cb) => cb(null, !!EXT[f.mimetype])
 });
 app.post('/api/admin/upload', admin, upload.single('image'), wrap(async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'Upload a JPG, PNG or WebP image under 3 MB' });
+  if (!req.file) return res.status(400).json({ error: 'Upload a JPG, PNG, WebP, GIF or AVIF image under 5 MB' });
   const name = crypto.randomBytes(12).toString('hex') + EXT[req.file.mimetype];
   if (!SB_ON) { fs.writeFileSync('public/uploads/' + name, req.file.buffer); return res.json({ url: '/uploads/' + name }); }
   const r = await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${name}`, { method: 'POST', headers: { ...(SB_KEY.startsWith('sb_') ? {} : { Authorization: 'Bearer ' + SB_KEY }), apikey: SB_KEY, 'Content-Type': req.file.mimetype }, body: req.file.buffer });
@@ -236,7 +236,7 @@ setInterval(async () => {
 }, 5 * 60 * 1000).unref();
 
 app.use((err, _req, res, _next) => {
-  if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Image must be under 3 MB' });
+  if (err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Image must be under 5 MB' });
   if (err.code === '22P02') return res.status(400).json({ error: 'Invalid id' });
   if (err.code === '23503') return res.status(404).json({ error: 'Not found' });
   if (err.code === '23505') return res.status(409).json({ error: 'Already exists' });
