@@ -76,6 +76,30 @@ h2::after{content:"";display:block;width:56px;height:4px;border-radius:4px;backg
 .bdg{position:absolute;left:10px;top:10px;z-index:2;background:var(--g);color:var(--ac2);font-weight:800;font-size:12px;padding:3px 10px;border-radius:999px}
 @media (prefers-reduced-motion:reduce){.blob,.mq div{animation:none!important}}
 .pm{width:100%;height:170px;object-fit:cover;border-radius:14px;margin-bottom:10px;display:block;background:var(--in)}.pmb{width:100%;max-height:440px;object-fit:cover;border-radius:22px;border:1px solid var(--bd)}
+
+/* ---- phone layout ---- */
+@media (max-width:700px){
+header{padding:10px 14px;gap:8px}
+header b{font-size:18px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hs{order:5;flex:1 1 100%;min-width:0;max-width:none}
+#nav{margin-left:auto}
+input,select,textarea{font-size:16px}
+main{padding:14px}
+.bn{height:270px;border-radius:22px}
+.sl{padding:20px 16px;gap:6px}
+.sl>div:first-child{min-width:0;flex:1}
+.sl h1{font-size:26px}
+.sl p{font-size:14px;margin:0 0 12px}
+.big{font-size:34px;flex-direction:column;align-items:center;gap:2px}
+.tw table,.tw tbody{display:block}
+.tw tr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.tw tr:last-child{border-bottom:0}
+.tw tr:has(th){display:none}
+.tw td{display:block;padding:0;border:0;max-width:100%;min-width:0;overflow-wrap:anywhere}
+.tw td:first-child{flex:1 1 100%;font-weight:600}
+.tw select{max-width:100%}
+.stat{min-width:calc(50% - 8px)}
+}
 </style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
 <header><b onclick="go('shop')">✨ Mysure E-Commerce Website</b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
 <div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><nav id="bn"></nav><div id="toast"></div>
