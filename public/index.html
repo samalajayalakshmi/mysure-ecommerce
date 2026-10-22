@@ -125,12 +125,33 @@ main{padding:14px}
 }
 .logo{display:block;height:66px;width:auto}
 @media (max-width:700px){.logo{height:56px}}
+
+/* ---- extras: theme toggle, tracker, delivery bar, skeleton ---- */
+:root[data-theme="light"]{--bg:#f6f3ff;--sf:rgba(255,255,255,.75);--in:rgba(80,50,160,.07);--tx:#1b1035;--mu:#5f5985;--bd:rgba(70,40,150,.16);--ac:#6d3df0;--ac2:#fff;--dg:#c81e4a;--g:linear-gradient(110deg,#6d3df0,#d6247e 50%,#0891b2);--ok:#047857;color-scheme:light}
+:root[data-theme="light"] .blob{opacity:.24}
+.tg{padding:8px 12px;font-size:16px}
+.trk{display:flex;align-items:flex-start;margin:12px 0 6px}
+.trk .s{flex:1;text-align:center;position:relative;font-size:12px;color:var(--mu)}
+.trk .s i{display:block;width:22px;height:22px;border-radius:50%;margin:0 auto 4px;background:var(--in);border:2px solid var(--bd);position:relative;z-index:1;font-style:normal;line-height:18px;font-size:12px;color:var(--ac2)}
+.trk .s::before{content:"";position:absolute;top:10px;left:-50%;width:100%;height:3px;background:var(--bd)}
+.trk .s:first-child::before{display:none}
+.trk .s.on{color:var(--tx);font-weight:600}
+.trk .s.on i{background:var(--ok);border-color:var(--ok)}
+.trk .s.on::before{background:var(--ok)}
+.dbar{margin:10px 0;max-width:380px}
+.dbar .t{height:8px;border-radius:99px;background:var(--in);overflow:hidden;margin-top:6px}
+.dbar .t i{display:block;height:100%;border-radius:99px;background:var(--g);transition:width .5s}
+.sk{min-height:230px;background:linear-gradient(100deg,var(--sf) 30%,var(--in) 50%,var(--sf) 70%);background-size:200% 100%;animation:skl 1.2s linear infinite}
+@keyframes skl{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
 </style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
 <header><b onclick="go('shop')"><img class="logo" src="/logo.png" alt="Mysure" width="84" height="66"></b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
 <div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><nav id="bn"></nav><div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),inr=n=>'₹'+Number(n).toLocaleString('en-IN');
 const LS={g:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t};applyTheme(LS.g('theme',null));
+function toggleTheme(){const light=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='light':matchMedia('(prefers-color-scheme: light)').matches,t=light?'dark':'light';applyTheme(t);LS.s('theme',t);nav()}
 let U=LS.g('u',null),cart=LS.g('cart',[]),wish=LS.g('wish',[]),coupon=LS.g('coupon',''),P=[],CATS=[];
 let view='shop',cat=0,q='',sort='rel',maxp=0,minr=0,pid=0,tab='dash',edit=null,slide=0,tm,tm2,msg='',reg=false;
 const isAdmin=()=>U&&U.role==='admin',prod=id=>P.find(p=>p.id===id),saveC=()=>LS.s('cart',cart);
@@ -146,7 +167,8 @@ window.addEventListener('popstate',()=>{view=hist.pop()||'shop';render()});
 const V={shop,cart:cartV,checkout,login,orders,admin,detail,wish:wishV};
 function render(){nav();$('#bk').hidden=view==='shop';V[view]();window.scrollTo(0,0)}
 function nav(){const n=cart.reduce((a,c)=>a+c.q,0);
-$('#nav').innerHTML=(U?`<span class="mu nb">Hi, ${esc(U.name)}</span>`:'')+`<button class="nb" onclick="go('wish')">♡ ${wish.length}</button><button class="nb" onclick="go('cart')">🛒 ${n}</button>`+(isAdmin()?`<button class="p nb" onclick="go('admin')">Admin</button>`:'')+(U&&!isAdmin()?`<button class="nb" onclick="go('orders')">Orders</button>`:'')+(U?`<button onclick="logout()">Logout</button>`:`<button class="p" onclick="go('login')">Login</button>`);
+const isLight=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='light':matchMedia('(prefers-color-scheme: light)').matches;
+$('#nav').innerHTML=`<button class="tg" onclick="toggleTheme()" aria-label="Switch light or dark theme">${isLight?'🌙':'☀️'}</button>`+(U?`<span class="mu nb">Hi, ${esc(U.name)}</span>`:'')+`<button class="nb" onclick="go('wish')">♡ ${wish.length}</button><button class="nb" onclick="go('cart')">🛒 ${n}</button>`+(isAdmin()?`<button class="p nb" onclick="go('admin')">Admin</button>`:'')+(U&&!isAdmin()?`<button class="nb" onclick="go('orders')">Orders</button>`:'')+(U?`<button onclick="logout()">Logout</button>`:`<button class="p" onclick="go('login')">Login</button>`);
 $('#bn').innerHTML=[['shop','🏠','Home'],['wish','♡','Wishlist'],['cart','🛒','Cart'+(n?' ('+n+')':'')],[U?(isAdmin()?'admin':'orders'):'login','👤',U?(isAdmin()?'Admin':'Orders'):'Login']].map(x=>`<button class="${view===x[0]?'on':''}" onclick="go('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}
 // ---- catalogue ----
 const S=[['Mega electronics sale','Up to 40% off phones, headphones and watches',['📱','🎧','⌚'],'Electronics','linear-gradient(120deg,#4338ca,#7e22ce 55%,#be185d)'],['New season fashion','Shoes, bags and shirts from ₹799',['👟','🎒','👕'],'Fashion','linear-gradient(120deg,#be185d,#c2410c)'],['Make your home magical','Lamps, mugs and cozy picks',['💡','☕','🛋️'],'Home','linear-gradient(120deg,#0f766e,#1d4ed8)']];
@@ -168,7 +190,7 @@ $('#app').innerHTML=`<div class="chips" id="cats">${[{id:0,name:'All'},...CATS].
 <section class="bn">${S.map((s,i)=>`<div class="sl ${i?'':'on'}" style="background:${s[4]}"><div><h1>${s[0]}</h1><p>${s[1]}</p><button class="wb" onclick="setCatName('${s[3]}')">Shop now</button></div><div class="big" aria-hidden="true">${s[2].map((e,j)=>`<span style="animation-delay:-${j*1.3}s">${e}</span>`).join('')}</div></div>`).join('')}</section>
 <div class="mq" aria-hidden="true"><div>${[...MQ,...MQ].map(x=>`<span>${x}</span>`).join('')}</div></div>
 <h2>Shop by category</h2><div class="tiles">${CATS.map(c=>`<button class="tile" style="--tg:${(TI[c.name]||['',GR[c.id%4]])[1]}" onclick="setCat(${c.id})">${esc(c.name)}<span>${(TI[c.name]||['🛍️'])[0]}</span></button>`).join('')}</div>
-${deals.length?`<h2>Today’s deals <span class="cd" id="cd"></span></h2><div class="rail">${deals.map(card).join('')}</div>`:''}
+${deals.length?`<h2>Today’s deals <span class="cd" id="cd"></span></h2><div class="rail">${deals.map(card).join('')}</div>`:''}${rvRail(0)}
 <h2 id="res-h">All products</h2>
 <div class="lay"><aside class="card flt"><b>Sort by</b><select id="so" aria-label="Sort"><option value="rel">Featured</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option><option value="rt">Top rated</option></select>
 <b>Max price</b><select id="mp" aria-label="Max price"><option value="0">Any price</option><option value="1000">Under ₹1,000</option><option value="5000">Under ₹5,000</option><option value="20000">Under ₹20,000</option></select>
@@ -190,7 +212,10 @@ function openP(id){pid=id;go('detail')}
 function wl(id){const i=wish.indexOf(id);i<0?wish.push(id):wish.splice(i,1);LS.s('wish',wish);nav();
 document.querySelectorAll(`.hrt[data-id="${id}"]`).forEach(b=>b.textContent=wished(id)?'♥':'♡');if(view==='wish')wishV();toast(i<0?'Saved to wishlist':'Removed from wishlist')}
 function wishV(){const l=P.filter(p=>wished(p.id));$('#app').innerHTML='<h2>Your wishlist</h2>'+(l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<p>Nothing saved yet. Tap ♡ on any product to keep it here.</p>')}
-async function detail(){const p=prod(pid);if(!p)return go('shop');const o=off(p),d=new Date(Date.now()+3*864e5).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
+const rvIds=()=>LS.g('rv',[]).filter(id=>prod(id));
+function rvAdd(id){LS.s('rv',[id,...LS.g('rv',[]).filter(x=>x!==id)].slice(0,10))}
+const rvRail=ex=>{const l=rvIds().filter(id=>id!==ex).slice(0,8).map(prod);return l.length?`<h2>Recently viewed</h2><div class="rail">${l.map(card).join('')}</div>`:''};
+async function detail(){const p=prod(pid);if(!p)return go('shop');rvAdd(p.id);const o=off(p),d=new Date(Date.now()+3*864e5).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
 let rv=[];try{rv=await api('/products/'+p.id+'/reviews')}catch(e){}
 const canR=U&&!isAdmin();
 $('#app').innerHTML=`<div class="pd">${p.image_url?`<img class="pmb" src="${esc(p.image_url)}" alt="${esc(p.name)}">`:`<div class="card em big1">${esc(p.icon||'📦')}</div>`}<div>
@@ -199,6 +224,7 @@ $('#app').innerHTML=`<div class="pd">${p.image_url?`<img class="pmb" src="${esc(
 <p>${esc(p.description||'')}</p><p class="mu">🚚 Free delivery by <b>${d}</b> on orders above ₹999. Cash on delivery available.</p>
 <p>${p.stock>0?(p.stock<5?'Only '+p.stock+' left in stock':'In stock'):'Out of stock'}</p>
 <div class="row"><button class="p" ${p.stock<1?'disabled':''} onclick="add(${p.id})">Add to cart</button><button ${p.stock<1?'disabled':''} onclick="add(${p.id});go('checkout')">Buy now</button><button onclick="wl(${p.id});detail()">${wished(p.id)?'♥ Saved':'♡ Wishlist'}</button></div></div></div>
+${(()=>{const l=P.filter(x=>x.id!==p.id&&x.category_id===p.category_id).slice(0,4);return l.length?`<h2>You may also like</h2><div class="grid">${l.map(card).join('')}</div>`:''})()}${rvRail(p.id)}
 <h2>Customer reviews</h2>${canR?`<form class="f card" id="rf" style="margin-bottom:12px"><select name="r"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select><input name="t" placeholder="Share your experience" required maxlength="300"><button class="p">Post review</button></form>`:'<p class="mu">Log in as a customer to write a review.</p>'}
 ${rv.map(r=>`<div class="card" style="margin-bottom:8px"><b>${esc(r.name)}</b> ${stars(r.rating)}<div>${esc(r.comment)}</div></div>`).join('')}`;
 const rf=$('#rf');if(rf)rf.onsubmit=async e=>{e.preventDefault();const f=new FormData(rf);try{await api('/products/'+p.id+'/reviews',{method:'POST',body:{rating:+f.get('r'),comment:f.get('t')}});await load();toast('Review posted');detail()}catch(x){fail(x)}}}
@@ -208,6 +234,7 @@ const sub=()=>cart.reduce((a,c)=>{const p=prod(c.id);return a+(p?p.price*c.q:0)}
 function applyCoupon(){const c=$('#cp').value.trim().toUpperCase();if(c&&c!=='MYSURE10')return toast('Invalid coupon code');coupon=c;LS.s('coupon',c);cartV()}
 function cartV(){const rows=cart.map(c=>({c,p:prod(c.id)})).filter(r=>r.p);
 $('#app').innerHTML=`<h2>Your cart</h2>`+(rows.length?`<div class="card tw"><table>${rows.map(({c,p})=>`<tr><td>${esc(p.icon||'')} ${esc(p.name)}</td><td>${inr(p.price)}</td><td><button onclick="qty(${p.id},-1)">−</button> ${c.q} <button onclick="qty(${p.id},1)">+</button></td><td>${inr(p.price*c.q)}</td></tr>`).join('')}</table></div>
+<div class="dbar card">${(()=>{const a=sub()-disc(),l=999-a;return l>0?`🚚 Add <b>${inr(l)}</b> more for <b>free delivery</b><div class="t"><i style="width:${Math.min(100,Math.max(4,a/999*100))}%"></i></div>`:'🎉 You get <b>free delivery</b> on this order!<div class="t"><i style="width:100%"></i></div>'})()}</div>
 <div class="card" style="margin:12px 0;max-width:380px;display:grid;gap:8px"><div class="row"><input id="cp" placeholder="Coupon code (try MYSURE10)" value="${esc(coupon)}" style="flex:1"><button onclick="applyCoupon()">Apply</button></div>
 <div class="row"><span>Subtotal</span><span class="sp">${inr(sub())}</span></div><div class="row"><span>Coupon discount</span><span class="sp">−${inr(disc())}</span></div><div class="row"><span>Delivery</span><span class="sp">${ship()?inr(ship()):'Free'}</span></div><div class="row pr"><span>Total</span><span class="sp">${inr(total())}</span></div></div><button class="p" onclick="go('checkout')">Checkout</button>`:'<p>Your cart is empty. Find something you like in the shop.</p>')}
 function qty(id,d){const c=cart.find(x=>x.id===id),p=prod(id);c.q+=d;if(c.q>p.stock)c.q=p.stock;if(c.q<1)cart=cart.filter(x=>x.id!==id);saveC();cartV();nav()}
@@ -226,8 +253,9 @@ $('#lf').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);tr
 const r=await api(reg?'/auth/register':'/auth/login',{method:'POST',body:{name:f.get('name'),email:f.get('email'),password:f.get('pass')}});
 U={token:r.token,name:r.name,role:r.role||'customer'};LS.s('u',U);go(isAdmin()?'admin':cart.length?'cart':'shop')}catch(x){fail(x)}}}
 function logout(){U=null;LS.s('u',null);go('shop')}
+const trk=s=>{if(s==='Cancelled'||s==='Refunded')return`<p class="mu" style="margin:8px 0">${s==='Cancelled'?'This order was cancelled.':'This order was refunded.'}</p>`;const n={Pending:1,Shipped:2,Delivered:3}[s]||1;return`<div class="trk">${['Order placed','Shipped','Delivered'].map((t,i)=>`<div class="s ${i<n?'on':''}"><i>${i<n?'✓':''}</i>${t}</div>`).join('')}</div>`};
 async function orders(){if(!U)return go('login');let o=[];try{o=await api('/orders/mine')}catch(e){return fail(e)}
-$('#app').innerHTML=`<h2>My orders</h2>`+(o.map(o=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>Order #${o.id}</b><span class="mu">${new Date(o.created_at).toLocaleDateString('en-IN')}</span><b class="sp">${o.status}${o.payment_method==='ONLINE'?(o.payment_status==='Paid'?' · Paid':' · Awaiting payment'):' · COD'}</b></div><div class="mu">${o.items.map(i=>esc(i.product_name)+' ×'+i.quantity).join(', ')}</div><div class="pr">${inr(o.total)}</div>${o.status==='Pending'&&o.payment_method==='ONLINE'&&o.payment_status==='Unpaid'&&o.rp_order_id?`<button class="p" onclick="payNow(${o.id},'${esc(o.rp_order_id)}',${+o.total})">Pay now</button> `:''}${o.status==='Pending'&&!(o.payment_method==='ONLINE'&&o.payment_status==='Paid')?`<button class="d" onclick="cancelO(${o.id})">Cancel order</button>`:''}</div>`).join('')||'<p>No orders yet.</p>')}
+$('#app').innerHTML=`<h2>My orders</h2>`+(o.map(o=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>Order #${o.id}</b><span class="mu">${new Date(o.created_at).toLocaleDateString('en-IN')}</span><b class="sp">${o.status}${o.payment_method==='ONLINE'?(o.payment_status==='Paid'?' · Paid':' · Awaiting payment'):' · COD'}</b></div><div class="mu">${o.items.map(i=>esc(i.product_name)+' ×'+i.quantity).join(', ')}</div>${trk(o.status)}<div class="pr">${inr(o.total)}</div>${o.status==='Pending'&&o.payment_method==='ONLINE'&&o.payment_status==='Unpaid'&&o.rp_order_id?`<button class="p" onclick="payNow(${o.id},'${esc(o.rp_order_id)}',${+o.total})">Pay now</button> `:''}${o.status==='Pending'&&!(o.payment_method==='ONLINE'&&o.payment_status==='Paid')?`<button class="d" onclick="cancelO(${o.id})">Cancel order</button>`:''}</div>`).join('')||'<p>No orders yet.</p>')}
 async function cancelO(id){try{await api('/orders/'+id+'/cancel',{method:'POST'});await load();orders()}catch(e){fail(e)}}
 // ---- admin ----
 async function admin(){if(!isAdmin())return go('login');
@@ -256,5 +284,6 @@ $('#hf').onsubmit=e=>{e.preventDefault();scrollR()};$('#hs').oninput=e=>{q=e.tar
 document.addEventListener('pointermove',e=>{const r=document.documentElement.style;r.setProperty('--gx',e.clientX+'px');r.setProperty('--gy',e.clientY+'px');
 const c=e.target.closest&&e.target.closest('.tilt');if(c){const k=c.getBoundingClientRect(),x=(e.clientX-k.left)/k.width,y=(e.clientY-k.top)/k.height;c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%');c.style.setProperty('--rx',((.5-y)*10)+'deg');c.style.setProperty('--ry',((x-.5)*12)+'deg')}});
 document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest('.tilt');if(c&&!c.contains(e.relatedTarget)){c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')}});
+$('#app').innerHTML='<div class="grid">'+'<div class="card sk"></div>'.repeat(6)+'</div>';
 load().then(render).catch(e=>{$('#app').innerHTML='<h2>Can’t reach the server</h2><p>'+esc(e.message)+'. Check that the backend is running and MySQL is connected.</p>'});
 </script></body></html>
