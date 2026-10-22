@@ -193,9 +193,35 @@ main{padding:14px}
 .grid .card .pm,.grid .card .em{height:auto;aspect-ratio:4/5}
 .grid .card .em{font-size:54px}
 }
+
+/* ---- footer + info pages ---- */
+#ft{position:relative;z-index:1;margin-top:34px;background:var(--sf);border-top:1px solid var(--bd);backdrop-filter:blur(10px);padding:34px clamp(14px,2vw,32px) 24px}
+#ft .fg{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:28px;max-width:1500px;margin:0 auto}
+#ft h4{margin:0 0 10px;font:700 15px "DM Sans",sans-serif}
+#ft .fl2{display:grid;gap:6px;justify-items:start}
+#ft .fl2 button{background:none;border:0;padding:0;border-radius:0;color:var(--mu);font-size:14px;text-align:left;cursor:pointer}
+#ft .fl2 button:hover{color:var(--tx);text-decoration:underline}
+#ft .brand img{display:block;height:64px;width:auto;margin-bottom:10px}
+#ft .brand p{margin:0 0 12px;color:var(--mu);font-size:14px;max-width:30em}
+#ft .pay{display:flex;gap:6px;flex-wrap:wrap}
+#ft .pay span{border:1px solid var(--bd);border-radius:8px;padding:3px 9px;font-size:12px;color:var(--mu);background:var(--in)}
+#ft .fb{max-width:1500px;margin:26px auto 0;padding-top:16px;border-top:1px solid var(--bd);display:flex;gap:12px 24px;flex-wrap:wrap;align-items:center;justify-content:space-between;color:var(--mu);font-size:13px}
+#ft .fb .fl3{display:flex;gap:6px 18px;flex-wrap:wrap}
+#ft .fb button{background:none;border:0;padding:0;border-radius:0;color:var(--mu);font-size:13px;cursor:pointer}
+#ft .fb button:hover{color:var(--tx);text-decoration:underline}
+.info{max-width:760px}
+.info h3{margin:22px 0 6px;font-size:17px}
+.info p,.info li{color:var(--tx);line-height:1.65}
+.info ul{padding-left:20px;margin:6px 0}
+@media (max-width:700px){
+#ft{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px));margin-top:22px}
+#ft .fg{grid-template-columns:1fr 1fr;gap:22px 16px}
+#ft .brand{grid-column:1/-1}
+#ft .fb{justify-content:flex-start}
+}
 </style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
 <header><b onclick="go('shop')"><img class="logo" src="/logo.png" alt="Mysure" width="84" height="66"></b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
-<div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><nav id="bn"></nav><div id="toast"></div>
+<div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><footer id="ft"></footer><nav id="bn"></nav><div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),inr=n=>'₹'+Number(n).toLocaleString('en-IN');
 const LS={g:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -214,11 +240,31 @@ const hist=[];
 function go(v){if(v!==view){hist.push(view);history.pushState({},'')}view=v;render()}
 window.addEventListener('popstate',()=>{view=hist.pop()||'shop';render()});
 const V={shop,cart:cartV,checkout,login,orders,admin,detail,wish:wishV};
-function render(){nav();$('#bk').hidden=view==='shop';V[view]();window.scrollTo(0,0);setTimeout(arUpd,60)}
+function render(){renderFooter();nav();$('#bk').hidden=view==='shop';V[view]();window.scrollTo(0,0);setTimeout(arUpd,60)}
 function nav(){const n=cart.reduce((a,c)=>a+c.q,0);
 const isLight=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='light':matchMedia('(prefers-color-scheme: light)').matches;
 $('#nav').innerHTML=`<button class="tg" onclick="toggleTheme()" aria-label="Switch light or dark theme">${isLight?'🌙':'☀️'}</button>`+(U?`<span class="mu nb">Hi, ${esc(U.name)}</span>`:'')+`<button class="nb" onclick="go('wish')">♡ ${wish.length}</button><button class="nb" onclick="go('cart')">🛒 ${n}</button>`+(isAdmin()?`<button class="p nb" onclick="go('admin')">Admin</button>`:'')+(U&&!isAdmin()?`<button class="nb" onclick="go('orders')">Orders</button>`:'')+(U?`<button onclick="logout()">Logout</button>`:`<button class="p" onclick="go('login')">Login</button>`);
 $('#bn').innerHTML=[['shop','🏠','Home'],['wish','♡','Wishlist'],['cart','🛒','Cart'+(n?' ('+n+')':'')],[U?(isAdmin()?'admin':'orders'):'login','👤',U?(isAdmin()?'Admin':'Orders'):'Login']].map(x=>`<button class="${view===x[0]?'on':''}" onclick="go('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}
+
+// ---- footer & info pages ----
+const BIZ={name:'Mysure',email:'',phone:'',address:''}; // fill these in to show your contact details on the Contact page
+const INFO={
+about:['About Mysure',`<p>Mysure is an online store for everyday fashion and lifestyle products at honest prices. We pack every order with care and ship it to your door.</p><p>Have a question or a suggestion? We would love to hear from you on the Contact page.</p>`],
+shipping:['Shipping & delivery',`<ul><li>Orders above ₹999 ship <b>free</b>. Below that, delivery costs ₹49.</li><li>Most orders arrive in about 3 to 5 days. The estimated date is shown on every product.</li><li>You can follow your order from <b>My orders</b>: Order placed, Shipped, Delivered.</li><li>Cash on Delivery is available. Please keep the exact amount ready.</li></ul>`],
+returns:['Returns & refunds',`<ul><li>You can cancel an order from <b>My orders</b> while it is still Pending.</li><li>Delivered items can be returned within 7 days if they are unused and in the original packing.</li><li>Refunds for online payments go back to the original payment method after we receive the item.</li><li>For Cash on Delivery orders we refund by bank transfer or UPI.</li></ul>`],
+privacy:['Privacy policy',`<p>We collect only what is needed to run your order: your name, phone number, delivery address and email.</p><ul><li>Passwords are stored encrypted. We never see or keep your password in plain text.</li><li>Online payments are handled by Razorpay. We do not store your card or UPI details.</li><li>We do not sell your information. We share your name, phone and address only with the delivery partner who brings your order.</li><li>To delete your account or data, contact us and we will remove it.</li></ul>`],
+terms:['Terms & conditions',`<ul><li>Prices and stock can change without notice. The price shown at checkout is the price you pay.</li><li>An order is confirmed once placed. We may cancel an order if an item is out of stock or the details are wrong, and we will refund any payment made.</li><li>Coupon codes cannot be combined and may be withdrawn at any time.</li><li>Product photos are for reference. Colours may look slightly different on your screen.</li></ul>`]
+};
+const contactHTML=()=>{const r=[BIZ.email&&`<li>Email: <b>${esc(BIZ.email)}</b></li>`,BIZ.phone&&`<li>Phone: <b>${esc(BIZ.phone)}</b></li>`,BIZ.address&&`<li>Address: <b>${esc(BIZ.address)}</b></li>`].filter(Boolean);return r.length?`<ul>${r.join('')}</ul>`:'<p>Contact details will be added here soon.</p>'};
+function info(k){const t=k==='contact'?['Contact us','']:INFO[k];$('#app').innerHTML=`<div class="info"><h2>${t[0]}</h2>${k==='contact'?contactHTML():t[1]}</div>`}
+Object.keys(INFO).concat('contact').forEach(k=>V[k]=()=>info(k));
+const goCat=id=>{setCat(id);window.scrollTo(0,0)};
+function renderFooter(){const L=(fn,t)=>`<button onclick="${fn}">${t}</button>`;
+$('#ft').innerHTML=`<div class="fg"><div class="brand"><img src="/logo.png" alt="Mysure" width="81" height="64"><p>Everyday fashion and lifestyle products at honest prices, delivered to your door.</p><div class="pay" aria-label="Payment methods"><span>Cash on Delivery</span><span>UPI</span><span>Cards</span><span>Netbanking</span></div></div>
+<div><h4>Shop</h4><div class="fl2">${CATS.slice(0,8).map(c=>L(`goCat(${c.id})`,esc(c.name))).join('')}</div></div>
+<div><h4>Help</h4><div class="fl2">${L("go('orders')",'My orders')}${L("go('wish')",'Wishlist')}${L("go('cart')",'Cart')}${L("go('shipping')",'Shipping & delivery')}${L("go('returns')",'Returns & refunds')}${L("go('contact')",'Contact us')}</div></div>
+<div><h4>Company</h4><div class="fl2">${L("go('about')",'About Mysure')}${L("go('privacy')",'Privacy policy')}${L("go('terms')",'Terms & conditions')}</div></div></div>
+<div class="fb"><span>© ${new Date().getFullYear()} Mysure. All rights reserved.</span><span class="fl3"><button onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button></span></div>`}
 // ---- catalogue ----
 const S=[['Mega electronics sale','Up to 40% off phones, headphones and watches',['📱','🎧','⌚'],'Electronics','linear-gradient(120deg,#4338ca,#7e22ce 55%,#be185d)'],['New season fashion','Shoes, bags and shirts from ₹799',['👟','🎒','👕'],'Fashion','linear-gradient(120deg,#be185d,#c2410c)'],['Make your home magical','Lamps, mugs and cozy picks',['💡','☕','🛋️'],'Home','linear-gradient(120deg,#0f766e,#1d4ed8)']];
 const MQ=['🚚 Free delivery above ₹999','🔒 Secure checkout','↩️ Easy 7-day returns','⭐ 4.5 average rating','🎁 Use MYSURE10 for 10% off'],TI={Electronics:['💻','linear-gradient(135deg,#4338ca,#0e7490)'],Fashion:['👗','linear-gradient(135deg,#db2777,#7e22ce)'],Home:['🏡','linear-gradient(135deg,#b45309,#be123c)'],
