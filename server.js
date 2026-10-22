@@ -209,44 +209,13 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_, f, cb) => cb(null, !!EXT[f.mimetype])
 });
-const saveImage = async (buffer, mime) => {
-  const name = crypto.randomBytes(12).toString('hex') + EXT[mime];
-  if (!SB_ON) { fs.writeFileSync('public/uploads/' + name, buffer); return '/uploads/' + name; }
-  const r = await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${name}`, { method: 'POST', headers: { ...(SB_KEY.startsWith('sb_') ? {} : { Authorization: 'Bearer ' + SB_KEY }), apikey: SB_KEY, 'Content-Type': mime }, body: buffer });
-  if (!r.ok) { console.error('Storage upload failed', r.status, await r.text()); throw Object.assign(new Error('Photo upload failed'), { code: 502 }); }
-  return `${SB_URL}/storage/v1/object/public/${SB_BUCKET}/${name}`;
-};
 app.post('/api/admin/upload', admin, upload.single('image'), wrap(async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Upload a JPG, PNG, WebP, GIF or AVIF image under 5 MB' });
-  try { res.json({ url: await saveImage(req.file.buffer, req.file.mimetype) }); } catch (e) { res.status(e.code || 500).json({ error: e.message }); }
-}));
-
-// Paste an image link: the server downloads a copy and stores it like an upload, so the photo never breaks if the original link dies.
-// Only public https links are allowed (private/internal addresses are blocked).
-const dns = require('dns').promises, net = require('net');
-const isPrivate = ip => {
-  if (net.isIPv4(ip)) { const [a, b] = ip.split('.').map(Number); return a === 10 || a === 127 || a === 0 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || a >= 224 || (a === 100 && b >= 64 && b <= 127); }
-  const l = ip.toLowerCase(); return l === '::1' || l === '::' || l.startsWith('fc') || l.startsWith('fd') || l.startsWith('fe80') || l.startsWith('::ffff:');
-};
-const MIME_BY_EXT = { jpg: 'image/jpeg', jpeg: 'image/jpeg', jfif: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', avif: 'image/avif' };
-const sniff = b => b.length > 12 && (b[0] === 0xff && b[1] === 0xd8 ? 'image/jpeg' : b.slice(1, 4).toString() === 'PNG' ? 'image/png' : b.slice(0, 3).toString() === 'GIF' ? 'image/gif'
-  : b.slice(0, 4).toString() === 'RIFF' && b.slice(8, 12).toString() === 'WEBP' ? 'image/webp' : b.slice(4, 12).toString().startsWith('ftypavi') ? 'image/avif' : null);
-app.post('/api/admin/import-image', admin, wrap(async (req, res) => {
-  const bad = m => res.status(400).json({ error: m });
-  let url; try { url = new URL(String(req.body.url || '').trim()); } catch { return bad('That is not a valid link'); }
-  for (let hop = 0; hop < 4; hop++) {
-    if (url.protocol !== 'https:') return bad('Link must start with https://');
-    let addrs; try { addrs = await dns.lookup(url.hostname, { all: true }); } catch { return bad('Could not open that link'); }
-    if (!addrs.length || addrs.some(a => isPrivate(a.address))) return bad('That link is not allowed');
-    let r; try { r = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(10000), headers: { 'User-Agent': 'Mozilla/5.0 MysureImageImport', Accept: 'image/*' } }); } catch { return bad('Could not open that link'); }
-    if (r.status >= 300 && r.status < 400 && r.headers.get('location')) { url = new URL(r.headers.get('location'), url); continue; }
-    if (!r.ok) return bad('Could not download that image (link may have expired)');
-    const len = +r.headers.get('content-length') || 0; if (len > 5 * 1024 * 1024) return bad('Image is over 5 MB');
-    const buf = Buffer.from(await r.arrayBuffer()); if (buf.length > 5 * 1024 * 1024) return bad('Image is over 5 MB');
-    const mime = sniff(buf); if (!mime) return bad('That link is not an image. Right-click the picture and choose "Copy image address", then paste it here.');
-    try { return res.json({ url: await saveImage(buf, mime) }); } catch (e) { return res.status(e.code || 500).json({ error: e.message }); }
-  }
-  bad('Too many redirects');
+  const name = crypto.randomBytes(12).toString('hex') + EXT[req.file.mimetype];
+  if (!SB_ON) { fs.writeFileSync('public/uploads/' + name, req.file.buffer); return res.json({ url: '/uploads/' + name }); }
+  const r = await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${name}`, { method: 'POST', headers: { ...(SB_KEY.startsWith('sb_') ? {} : { Authorization: 'Bearer ' + SB_KEY }), apikey: SB_KEY, 'Content-Type': req.file.mimetype }, body: req.file.buffer });
+  if (!r.ok) { console.error('Storage upload failed', r.status, await r.text()); return res.status(502).json({ error: 'Photo upload failed' }); }
+  res.json({ url: `${SB_URL}/storage/v1/object/public/${SB_BUCKET}/${name}` });
 }));
 
 // ---------- reviews ----------
