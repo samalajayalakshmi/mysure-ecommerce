@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mysure</title>
+<script>try{document.documentElement.dataset.theme=JSON.parse(localStorage.getItem('theme'))||'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -150,7 +151,7 @@ main{padding:14px}
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),inr=n=>'₹'+Number(n).toLocaleString('en-IN');
 const LS={g:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t};applyTheme(LS.g('theme',null));
+const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t};applyTheme(LS.g('theme','light'));
 function toggleTheme(){const light=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='light':matchMedia('(prefers-color-scheme: light)').matches,t=light?'dark':'light';applyTheme(t);LS.s('theme',t);nav()}
 let U=LS.g('u',null),cart=LS.g('cart',[]),wish=LS.g('wish',[]),coupon=LS.g('coupon',''),P=[],CATS=[];
 let view='shop',cat=0,q='',sort='rel',maxp=0,minr=0,pid=0,tab='dash',edit=null,slide=0,tm,tm2,msg='',reg=false;
