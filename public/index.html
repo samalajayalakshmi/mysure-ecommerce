@@ -78,7 +78,7 @@ h2::after{content:"";display:block;width:56px;height:4px;border-radius:4px;backg
 .pm{width:100%;height:170px;object-fit:cover;border-radius:14px;margin-bottom:10px;display:block;background:var(--in)}.pmb{width:100%;max-height:440px;object-fit:cover;border-radius:22px;border:1px solid var(--bd)}
 </style></head><body><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
 <header><b onclick="go('shop')">✨ Mysure E-Commerce Website</b><form class="hs" id="hf"><input id="hs" type="search" placeholder="Search products, brands and categories" aria-label="Search"><button class="p" aria-label="Search">🔍</button></form><span id="nav" class="row"></span></header>
-<main id="app"></main><nav id="bn"></nav><div id="toast"></div>
+<div id="bk" style="max-width:1060px;margin:0 auto;padding:14px 18px 0;position:relative;z-index:1" hidden><button class="bkb" onclick="history.back()" aria-label="Go back">‹ Back</button></div><main id="app"></main><nav id="bn"></nav><div id="toast"></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),inr=n=>'₹'+Number(n).toLocaleString('en-IN');
 const LS={g:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -91,9 +91,11 @@ if(!r.ok){if(r.status===401&&U){U=null;LS.s('u',null);nav()}throw new Error(d.er
 async function load(){const[p,c]=await Promise.all([api('/products'),api('/categories')]);P=p.map(x=>({...x,price:+x.price,mrp:+x.mrp||0,rating:+x.rating||0,rc:+x.rc||0}));CATS=c}
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)}
 const fail=e=>toast(e.message||'Something went wrong');
-function go(v){view=v;render()}
+const hist=[];
+function go(v){if(v!==view){hist.push(view);history.pushState({},'')}view=v;render()}
+window.addEventListener('popstate',()=>{view=hist.pop()||'shop';render()});
 const V={shop,cart:cartV,checkout,login,orders,admin,detail,wish:wishV};
-function render(){nav();V[view]();window.scrollTo(0,0)}
+function render(){nav();$('#bk').hidden=view==='shop';V[view]();window.scrollTo(0,0)}
 function nav(){const n=cart.reduce((a,c)=>a+c.q,0);
 $('#nav').innerHTML=(U?`<span class="mu nb">Hi, ${esc(U.name)}</span>`:'')+`<button class="nb" onclick="go('wish')">♡ ${wish.length}</button><button class="nb" onclick="go('cart')">🛒 ${n}</button>`+(isAdmin()?`<button class="p nb" onclick="go('admin')">Admin</button>`:'')+(U&&!isAdmin()?`<button class="nb" onclick="go('orders')">Orders</button>`:'')+(U?`<button onclick="logout()">Logout</button>`:`<button class="p" onclick="go('login')">Login</button>`);
 $('#bn').innerHTML=[['shop','🏠','Home'],['wish','♡','Wishlist'],['cart','🛒','Cart'+(n?' ('+n+')':'')],[U?(isAdmin()?'admin':'orders'):'login','👤',U?(isAdmin()?'Admin':'Orders'):'Login']].map(x=>`<button class="${view===x[0]?'on':''}" onclick="go('${x[0]}')"><span>${x[1]}</span>${x[2]}</button>`).join('')}
@@ -140,7 +142,7 @@ function wishV(){const l=P.filter(p=>wished(p.id));$('#app').innerHTML='<h2>Your
 async function detail(){const p=prod(pid);if(!p)return go('shop');const o=off(p),d=new Date(Date.now()+3*864e5).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
 let rv=[];try{rv=await api('/products/'+p.id+'/reviews')}catch(e){}
 const canR=U&&!isAdmin();
-$('#app').innerHTML=`<button onclick="go('shop')">← Back to shop</button><div class="pd">${p.image_url?`<img class="pmb" src="${esc(p.image_url)}" alt="${esc(p.name)}">`:`<div class="card em big1">${esc(p.icon||'📦')}</div>`}<div>
+$('#app').innerHTML=`<div class="pd">${p.image_url?`<img class="pmb" src="${esc(p.image_url)}" alt="${esc(p.name)}">`:`<div class="card em big1">${esc(p.icon||'📦')}</div>`}<div>
 <h2 style="margin-top:0">${esc(p.name)}</h2><div class="row">${stars(p.rating)}<span class="mu">${p.rating.toFixed(1)} · ${p.rc.toLocaleString('en-IN')} ratings</span></div>
 <div class="row" style="margin:10px 0"><span class="pr" style="font-size:32px">${inr(p.price)}</span>${o?`<s class="mu">${inr(p.mrp)}</s><span class="off">${o}% off</span>`:''}</div>
 <p>${esc(p.description||'')}</p><p class="mu">🚚 Free delivery by <b>${d}</b> on orders above ₹999. Cash on delivery available.</p>
@@ -174,7 +176,7 @@ const r=await api(reg?'/auth/register':'/auth/login',{method:'POST',body:{name:f
 U={token:r.token,name:r.name,role:r.role||'customer'};LS.s('u',U);go(isAdmin()?'admin':cart.length?'cart':'shop')}catch(x){fail(x)}}}
 function logout(){U=null;LS.s('u',null);go('shop')}
 async function orders(){if(!U)return go('login');let o=[];try{o=await api('/orders/mine')}catch(e){return fail(e)}
-$('#app').innerHTML=`<button onclick="go('shop')">← Continue shopping</button><h2>My orders</h2>`+(o.map(o=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>Order #${o.id}</b><span class="mu">${new Date(o.created_at).toLocaleDateString('en-IN')}</span><b class="sp">${o.status}${o.payment_method==='ONLINE'?(o.payment_status==='Paid'?' · Paid':' · Awaiting payment'):' · COD'}</b></div><div class="mu">${o.items.map(i=>esc(i.product_name)+' ×'+i.quantity).join(', ')}</div><div class="pr">${inr(o.total)}</div>${o.status==='Pending'&&o.payment_method==='ONLINE'&&o.payment_status==='Unpaid'&&o.rp_order_id?`<button class="p" onclick="payNow(${o.id},'${esc(o.rp_order_id)}',${+o.total})">Pay now</button> `:''}${o.status==='Pending'&&!(o.payment_method==='ONLINE'&&o.payment_status==='Paid')?`<button class="d" onclick="cancelO(${o.id})">Cancel order</button>`:''}</div>`).join('')||'<p>No orders yet.</p>')}
+$('#app').innerHTML=`<h2>My orders</h2>`+(o.map(o=>`<div class="card" style="margin-bottom:10px"><div class="row"><b>Order #${o.id}</b><span class="mu">${new Date(o.created_at).toLocaleDateString('en-IN')}</span><b class="sp">${o.status}${o.payment_method==='ONLINE'?(o.payment_status==='Paid'?' · Paid':' · Awaiting payment'):' · COD'}</b></div><div class="mu">${o.items.map(i=>esc(i.product_name)+' ×'+i.quantity).join(', ')}</div><div class="pr">${inr(o.total)}</div>${o.status==='Pending'&&o.payment_method==='ONLINE'&&o.payment_status==='Unpaid'&&o.rp_order_id?`<button class="p" onclick="payNow(${o.id},'${esc(o.rp_order_id)}',${+o.total})">Pay now</button> `:''}${o.status==='Pending'&&!(o.payment_method==='ONLINE'&&o.payment_status==='Paid')?`<button class="d" onclick="cancelO(${o.id})">Cancel order</button>`:''}</div>`).join('')||'<p>No orders yet.</p>')}
 async function cancelO(id){try{await api('/orders/'+id+'/cancel',{method:'POST'});await load();orders()}catch(e){fail(e)}}
 // ---- admin ----
 async function admin(){if(!isAdmin())return go('login');
